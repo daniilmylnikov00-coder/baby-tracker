@@ -2,7 +2,8 @@ let varyaPhotos = [];
 let familyPhotos = [];
 
 async function loadPhotos(type) {
-  const { data, error } = await db.from('photos').select('*').eq('album_type', type).order('created_at', { ascending: false });
+  // Меняем ascending на true, чтобы старые фото были сверху, а новые добавлялись вниз (как в альбоме)
+  const { data, error } = await db.from('photos').select('*').eq('album_type', type).order('created_at', { ascending: true });
   if (error) { console.error("Ошибка чтения фото:", error); return; }
   
   if (type === 'varya') {
@@ -21,7 +22,6 @@ async function uploadPhoto(input, albumType) {
   const captionInput = document.getElementById(albumType + 'PhotoCaption');
   const caption = captionInput.value;
   
-  // Ищем кнопку по ID
   const btnId = albumType + 'UploadBtn';
   const btn = document.getElementById(btnId);
 
@@ -82,11 +82,39 @@ function renderGallery(containerId, photos) {
     return;
   }
 
-  container.innerHTML = photos.map(p => `
-    <div class="polaroid">
-      <img src="${p.url}" alt="Фото" loading="lazy">
-      <div class="caption">${p.caption || ''}</div>
-      <button class="delete-photo" onclick="deletePhoto('${p.id}', '${p.album_type}', '${p.url}')">✕</button>
-    </div>
-  `).join('');
+  // Генерируем HTML для фото
+  container.innerHTML = photos.map((p, index) => {
+    // Определяем размер и поворот в зависимости от индекса (для хаоса)
+    let sizeClass = '';
+    let randomRotate = 0;
+
+    // Логика размеров: 
+    // 1-я фотка (индекс 0) - большая по центру
+    // 2-я и 3-я (индекс 1, 2) - маленькие в ряд
+    // 4-я (индекс 3) - большая
+    // И так далее по кругу...
+    
+    const position = index % 4;
+    if (position === 0) {
+      sizeClass = 'polaroid-large';
+      randomRotate = -2; // Чуть влево
+    } else if (position === 1) {
+      sizeClass = 'polaroid-small';
+      randomRotate = 3; // Вправо
+    } else if (position === 2) {
+      sizeClass = 'polaroid-small';
+      randomRotate = -4; // Сильно влево
+    } else {
+      sizeClass = 'polaroid-large';
+      randomRotate = 2; // Вправо
+    }
+
+    return `
+      <div class="polaroid ${sizeClass}" style="transform: rotate(${randomRotate}deg);">
+        <img src="${p.url}" alt="Фото" loading="lazy">
+        <div class="caption">${p.caption || ''}</div>
+        <button class="delete-photo" onclick="deletePhoto('${p.id}', '${p.album_type}', '${p.url}')">✕</button>
+      </div>
+    `;
+  }).join('');
 }
