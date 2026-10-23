@@ -1,24 +1,31 @@
-let shopItems = JSON.parse(localStorage.getItem('family_shop') || '[]');
+let shopItems = [];
 
-function addShop() {
+async function loadShop() {
+  const { data, error } = await db.from('shop').select('*').order('created_at', { ascending: false });
+  if (error) { console.error(error); return; }
+  shopItems = data;
+  renderShop();
+}
+
+async function addShop() {
   const input = document.getElementById('shopInput');
   if (!input.value.trim()) return;
-  shopItems.unshift({ id: Date.now(), text: input.value.trim(), done: false });
+  const { error } = await db.from('shop').insert([{ text: input.value.trim() }]);
+  if (error) { alert('Ошибка: ' + error.message); return; }
   input.value = '';
-  localStorage.setItem('family_shop', JSON.stringify(shopItems));
-  renderShop();
+  loadShop();
 }
 
-function toggleShop(id) {
-  shopItems = shopItems.map(s => s.id === id ? { ...s, done: !s.done } : s);
-  localStorage.setItem('family_shop', JSON.stringify(shopItems));
-  renderShop();
+async function toggleShop(id, currentStatus) {
+  const { error } = await db.from('shop').update({ done: !currentStatus }).eq('id', id);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  loadShop();
 }
 
-function delShop(id) {
-  shopItems = shopItems.filter(s => s.id !== id);
-  localStorage.setItem('family_shop', JSON.stringify(shopItems));
-  renderShop();
+async function delShop(id) {
+  const { error } = await db.from('shop').delete().eq('id', id);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  loadShop();
 }
 
 function renderShop() {
@@ -31,9 +38,13 @@ function renderShop() {
   list.innerHTML = shopItems.map(s => `
     <li>
       <label class="item-check">
-        <input type="checkbox" ${s.done ? 'checked' : ''} onchange="toggleShop(${s.id})">
+        <input type="checkbox" ${s.done ? 'checked' : ''} onchange="toggleShop('${s.id}', ${s.done})">
         <span class="${s.done ? 'done' : ''}" style="word-break: break-all;">${s.text}</span>
       </label>
-      <button class="del" onclick="delShop(${s.id})">✕</button>
+      <button class="del" onclick="delShop('${s.id}')">✕</button>
     </li>`).join('');
 }
+
+db.channel('shop-channel')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'shop' }, loadShop)
+  .subscribe();
