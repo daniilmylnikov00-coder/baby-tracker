@@ -2,7 +2,7 @@ let varyaPhotos = [];
 let familyPhotos = [];
 
 async function loadPhotos(type) {
-  // Меняем ascending на true, чтобы старые фото были сверху, а новые добавлялись вниз (как в альбоме)
+  // Сортируем по возрастанию (старые сверху, новые снизу)
   const { data, error } = await db.from('photos').select('*').eq('album_type', type).order('created_at', { ascending: true });
   if (error) { console.error("Ошибка чтения фото:", error); return; }
   
@@ -83,31 +83,19 @@ function renderGallery(containerId, photos) {
   }
 
   // Генерируем HTML для фото
-  container.innerHTML = photos.map((p, index) => {
-    // Определяем размер и поворот в зависимости от индекса (для хаоса)
-    let sizeClass = '';
-    let randomRotate = 0;
-
-    // Логика размеров: 
-    // 1-я фотка (индекс 0) - большая по центру
-    // 2-я и 3-я (индекс 1, 2) - маленькие в ряд
-    // 4-я (индекс 3) - большая
-    // И так далее по кругу...
-    
-    const position = index % 4;
-    if (position === 0) {
-      sizeClass = 'polaroid-large';
-      randomRotate = -2; // Чуть влево
-    } else if (position === 1) {
-      sizeClass = 'polaroid-small';
-      randomRotate = 3; // Вправо
-    } else if (position === 2) {
-      sizeClass = 'polaroid-small';
-      randomRotate = -4; // Сильно влево
-    } else {
-      sizeClass = 'polaroid-large';
-      randomRotate = 2; // Вправо
+  container.innerHTML = photos.map((p) => {
+    // Берем уникальный ID фото и превращаем его в число
+    // Это нужно, чтобы для каждой конкретной фотографии размер и наклон всегда были одинаковыми при перезагрузке
+    let hash = 0;
+    for (let i = 0; i < p.id.length; i++) {
+        hash = p.id.charCodeAt(i) + ((hash << 5) - hash);
     }
+    
+    // Определяем размер: если число четное - большая, если нечетное - маленькая
+    const sizeClass = (Math.abs(hash) % 2 === 0) ? 'polaroid-large' : 'polaroid-small';
+    
+    // Определяем наклон: от -6 до +6 градусов
+    const randomRotate = (Math.abs(hash) % 13) - 6;
 
     return `
       <div class="polaroid ${sizeClass}" style="transform: rotate(${randomRotate}deg);">
