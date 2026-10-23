@@ -48,7 +48,3 @@ function renderEvents() {
   }
 }
 
-// Подписка на изменения в реальном времени (чтобы у жены обновлялось само)
-db.channel('events-channel')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, loadEvents)
-  .subscribe();
