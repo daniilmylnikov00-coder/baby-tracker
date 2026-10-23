@@ -1,24 +1,31 @@
-let tasks = JSON.parse(localStorage.getItem('family_tasks') || '[]');
+let tasks = [];
 
-function addTask() {
+async function loadTasks() {
+  const { data, error } = await db.from('tasks').select('*').order('created_at', { ascending: false });
+  if (error) { console.error(error); return; }
+  tasks = data;
+  renderTasks();
+}
+
+async function addTask() {
   const input = document.getElementById('taskInput');
   if (!input.value.trim()) return;
-  tasks.unshift({ id: Date.now(), text: input.value.trim(), done: false });
+  const { error } = await db.from('tasks').insert([{ text: input.value.trim() }]);
+  if (error) { alert('Ошибка: ' + error.message); return; }
   input.value = '';
-  localStorage.setItem('family_tasks', JSON.stringify(tasks));
-  renderTasks();
+  loadTasks();
 }
 
-function toggleTask(id) {
-  tasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
-  localStorage.setItem('family_tasks', JSON.stringify(tasks));
-  renderTasks();
+async function toggleTask(id, currentStatus) {
+  const { error } = await db.from('tasks').update({ done: !currentStatus }).eq('id', id);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  loadTasks();
 }
 
-function delTask(id) {
-  tasks = tasks.filter(t => t.id !== id);
-  localStorage.setItem('family_tasks', JSON.stringify(tasks));
-  renderTasks();
+async function delTask(id) {
+  const { error } = await db.from('tasks').delete().eq('id', id);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  loadTasks();
 }
 
 function renderTasks() {
@@ -31,9 +38,13 @@ function renderTasks() {
   list.innerHTML = tasks.map(t => `
     <li>
       <label class="item-check">
-        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})">
+        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask('${t.id}', ${t.done})">
         <span class="${t.done ? 'done' : ''}">${t.text}</span>
       </label>
-      <button class="del" onclick="delTask(${t.id})">✕</button>
+      <button class="del" onclick="delTask('${t.id}')">✕</button>
     </li>`).join('');
 }
+
+db.channel('tasks-channel')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, loadTasks)
+  .subscribe();
