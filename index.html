@@ -6,8 +6,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Мыльниковы Family</title>
+
+<!-- ПОДКЛЮЧАЕМ ИКОНКУ И МАНИФЕСТ -->
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Great+Vibes&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=10">
 </head>
 <body>
 
@@ -49,7 +54,6 @@
     <div id="tab-varya" class="tab-content">
       <div class="upload-area glass-card">
         <input type="file" id="varyaPhotoInput" accept="image/*" style="display: none;" onchange="uploadPhoto(this, 'varya')">
-        <!-- ДОБАВИЛИ ID КНОПКЕ -->
         <button id="varyaUploadBtn" class="btn upload-btn" onclick="document.getElementById('varyaPhotoInput').click()">📸 Добавить фото</button>
         <input type="text" id="varyaPhotoCaption" placeholder="Подпись (например: Тест о беременности)" style="width: 100%; margin-top: 12px; padding: 12px; border-radius: 12px; border: none; background: rgba(255,255,255,0.6); font-family: inherit;">
       </div>
@@ -60,7 +64,6 @@
     <div id="tab-family" class="tab-content">
       <div class="upload-area glass-card">
         <input type="file" id="familyPhotoInput" accept="image/*" style="display: none;" onchange="uploadPhoto(this, 'family')">
-        <!-- ДОБАВИЛИ ID КНОПКЕ -->
         <button id="familyUploadBtn" class="btn upload-btn" onclick="document.getElementById('familyPhotoInput').click()">📸 Добавить фото</button>
         <input type="text" id="familyPhotoCaption" placeholder="Подпись..." style="width: 100%; margin-top: 12px; padding: 12px; border-radius: 12px; border: none; background: rgba(255,255,255,0.6); font-family: inherit;">
       </div>
@@ -110,23 +113,15 @@
   </nav>
 </div>
 
-<!-- СКРИПТ ДЛЯ ЛОВЛИ ОШИБОК НА ЭКРАНЕ -->
-<script>
-  window.onerror = function(message, source, lineno, colno, error) {
-    alert("ОШИБКА JS: " + message + "\nСтрока: " + lineno);
-    return false;
-  };
-</script>
-
-<!-- ПОДКЛЮЧАЕМ SUPABASE -->
+<!-- ПОДКЛЮЧАЕМ SUPABASE (БИБЛИОТЕКА) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- НАШИ СКРИПТЫ (обновили версии) -->
-<script src="js/supabase.js?v=2"></script>
-<script src="js/byt.js?v=2"></script>
-<script src="js/tasks.js?v=2"></script>
-<script src="js/shop.js?v=2"></script>
-<script src="js/album-varya.js?v=5"></script>
-<script src="js/app.js?v=5"></script>
+<!-- НАШИ СКРИПТЫ С НОВЫМИ ВЕРСИЯМИ (v=10) -->
+<script src="js/supabase.js?v=10"></script>
+<script src="js/byt.js?v=10"></script>
+<script src="js/tasks.js?v=10"></script>
+<script src="js/shop.js?v=10"></script>
+<script src="js/album-varya.js?v=10"></script>
+<script src="js/app.js?v=10"></script>
 </body>
 </html>
