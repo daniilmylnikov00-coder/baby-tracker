@@ -211,7 +211,7 @@ nav.bottom-nav button {
 nav.bottom-nav button.active { color: var(--pink-dark); transform: translateY(-3px); }
 nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.06)); }
 
-/* --- СТИЛИ ДЛЯ ФОТОАЛЬБОМА (ХАОС) --- */
+/* --- СТИЛИ ДЛЯ ФОТОАЛЬБОМА (ПРОБКОВАЯ ДОСКА) --- */
 .upload-area {
   display: flex;
   flex-direction: column;
@@ -229,80 +229,94 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   margin-bottom: 0;
 }
 
+/* Контейнер для альбома (имитация пробковой доски) */
 .photo-album {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   padding: 30px 10px;
   width: 100%;
-  position: relative;
-  /* Добавляем немного пространства для разлетающихся фото */
-  min-height: 400px; 
+  align-items: start;
+  
+  /* Легкая текстура доски (цвет топленого молока с небольшим шумом) */
+  background-color: #f5ebe6;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  border-radius: 20px;
+  border: 2px solid rgba(232, 216, 200, 0.8);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
 }
 
 .polaroid {
-  background: #fff;
-  padding: 8px 8px 35px 8px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.18);
-  border-radius: 4px;
   position: relative;
   transition: transform 0.3s ease, z-index 0.3s;
-  /* Важно: разрешаем элементам налезать друг на друга */
-  margin: -15px; 
+  width: 100%;
+  break-inside: avoid;
+  /* Убираем белый фон и паддинги полароида */
+  padding: 0;
+  background: transparent;
+  /* Делаем тонкую белую рамку для фото, как у распечатанных снимков */
+  border: 4px solid #fff;
+  box-shadow: 2px 4px 10px rgba(0,0,0,0.2);
 }
 
 .polaroid:hover {
   z-index: 100;
-  transform: scale(1.1) rotate(0deg) !important;
+  transform: scale(1.05) rotate(0deg) !important;
+  box-shadow: 2px 8px 20px rgba(0,0,0,0.3);
 }
 
-/* Большие фото */
-.polaroid-large {
-  width: 75%;
-  max-width: 260px;
-  z-index: 2; /* Большие поверх маленьких */
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-/* Маленькие фото */
-.polaroid-small {
-  width: 50%;
-  max-width: 160px;
-  z-index: 3; /* Маленькие поверх больших (для эффекта наложения) */
-}
-
-/* Чтобы маленькие фото не вставали строго в ряд, а "плясали" */
-.polaroid-small:nth-child(even) {
-  margin-left: -20px;
-  margin-top: 30px;
-}
-.polaroid-small:nth-child(odd) {
-  margin-right: -20px;
-  margin-top: -10px;
+/* ГВОЗДИК */
+.polaroid::before {
+  content: '';
+  position: absolute;
+  top: -6px; /* Выносим гвоздик чуть выше фото */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  /* Делаем градиент для объема (нежно-розовый) */
+  background: radial-gradient(circle at 30% 30%, #fff, #f2c6c2 40%, #d99a96 100%);
+  box-shadow: 
+    inset -1px -1px 2px rgba(0,0,0,0.3), 
+    1px 2px 4px rgba(0,0,0,0.4);
+  z-index: 10;
 }
 
 .polaroid img {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: auto;
   object-fit: cover;
-  border-radius: 2px;
-  background: #eee;
+  display: block; /* Убирает лишние отступы под картинкой */
 }
 
+.polaroid-large, .polaroid-small {
+  grid-column: span 1;
+}
+
+.polaroid-large:nth-child(3n) {
+  grid-column: span 2;
+}
+
+/* Подпись теперь будет поверх фото снизу */
 .polaroid .caption {
   position: absolute;
-  bottom: 6px;
+  bottom: 0;
   left: 0;
   right: 0;
   text-align: center;
   font-family: 'Caveat', cursive;
-  font-size: 18px;
-  color: #333;
-  line-height: 1;
-  padding: 0 5px;
+  font-size: 20px;
+  color: #fff;
+  line-height: 1.2;
+  padding: 15px 5px 5px 5px;
   word-wrap: break-word;
+  /* Затемнение снизу, чтобы белый текст было видно на любой картинке */
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
 }
 
 .polaroid .delete-photo {
@@ -322,5 +336,6 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   font-size: 14px;
   opacity: 0;
   transition: opacity 0.2s;
+  z-index: 10;
 }
 .polaroid:hover .delete-photo { opacity: 1; }
