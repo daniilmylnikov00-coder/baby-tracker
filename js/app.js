@@ -22,19 +22,16 @@ function showApp() {
     loadPhotos('varya');
     loadPhotos('family');
 
-    // Realtime для всех таблиц
     db.channel('custom-all-channel')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => loadEvents())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => loadTasks())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'shop' }, () => loadShop())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'photos' }, (payload) => {
-         // Обновляем нужный альбом
          if (payload.new && payload.new.album_type) loadPhotos(payload.new.album_type);
          else if (payload.old) { loadPhotos('varya'); loadPhotos('family'); }
       })
       .subscribe();
 
-    // Страховка каждые 3 секунды
     setInterval(() => {
       const activeTab = document.querySelector('.tab-content.active').id;
       if (activeTab === 'tab-byt') loadEvents();
