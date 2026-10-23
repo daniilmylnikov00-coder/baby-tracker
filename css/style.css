@@ -9,7 +9,7 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-/* Красивый фон с еле заметными пятнами для эффекта стекла */
+/* Блокируем прокрутку всей страницы (убирает pull-to-refresh) */
 body {
   margin: 0;
   font-family: 'Nunito', system-ui, sans-serif;
@@ -19,13 +19,15 @@ body {
     radial-gradient(circle at 90% 80%, rgba(232, 216, 200, 0.5) 0%, transparent 40%);
   background-attachment: fixed;
   color: var(--text);
-  padding-bottom: 90px;
+  height: 100vh;
+  overflow: hidden; 
 }
 
 /* --- ЭКРАН ВХОДА --- */
 #lock {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   height: 100vh; padding: 20px; text-align: center;
+  overflow-y: auto; /* На всякий случай, если экран маленький */
 }
 .logo-text { margin-bottom: 10px; line-height: 1; }
 .logo-cursive {
@@ -65,23 +67,40 @@ body {
   transition: transform 0.1s, opacity 0.2s;
 }
 #lock button:active { transform: scale(0.97); opacity: 0.9; }
-#err { color: #d9534f; margin-top: 12px; font-size: 14px; min-height: 20px; }
+ padding#err { color: #d9534f; margin-top: 12:px; font-size: 14px ; min-height: 20px; }
 
-/* --- ПРИЛОЖЕНИЕ --- */
-#app { display: none; }
+/* ---0 ПРИЛОЖЕНИЕ --- */
+#;app { 
+  display: none; 
+  margin height: 100vh;
+  flex-direction: column;
+}
 
-header { padding: 24px 20px 16px; text-align: center; }
+header { 
+  padding: 24px 20px 16px; 
+  text-align: center; 
+  flex-shrink: 0;
+}
 header h1 {
   margin: 0; font-family: 'Great Vibes', cursive; font-size: 42px;
   color: var(--pink-dark); font-weight: normal;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
 }
 
+/* Прокручиваемый контент */
+.scrollable-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 120px; /* Место под парящее меню */
+}
+.scrollable-content::-webkit-scrollbar { display: none; }
+
 .tab-content { display: none; padding: 0 16px; animation: fadeIn 0.3s ease; }
 .tab-content.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 
-/* Стеклянные карточки (Glassmorphism) */
+/* Стеклянные карточки */
 .glass-card {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px);
@@ -122,7 +141,7 @@ header h1 {
 }
 
 /* Списки */
-ul.list { list-style: none; padding: 0; margin: 0; }
+ul.list { list-style: none;: 0; }
 ul.list li {
   display: flex; justify-content: space-between; align-items: center;
   padding: 14px 0; border-bottom: 1px solid rgba(232, 216, 200, 0.4); font-size: 15px;
@@ -158,51 +177,24 @@ ul.list li:last-child { border-bottom: none; }
 /* Нижнее меню (парящая капсула) */
 nav.bottom-nav {
   position: fixed; 
-  /* Отступы от краев экрана, чтобы панель парила */
   bottom: 20px; 
   left: 16px; 
   right: 16px; 
-  
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  
   display: flex; 
   justify-content: space-around;
-  /* Чуть больше отступов внутри для воздуха */
   padding: 12px 4px; 
-  
-  /* Тень более мягкая, чтобы она парила */
   box-shadow: 0 10px 30px rgba(232, 216, 200, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  
-  /* Круглые углы со всех сторон */
   border-radius: 30px; 
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 nav.bottom-nav button {
-  background: none; 
-  border: none; 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center;
-  gap: 6px; 
-  color: #c4b8b0; 
-  font-size: 11px; 
-  font-weight: 700; 
-  font-family: inherit;
-  cursor: pointer; 
-  width: 20%; 
-  transition: all 0.2s;
+  background: none; border: none; display: flex; flex-direction: column; align-items: center;
+  gap: 6px; color: #c4b8b0; font-size: 11px; font-weight: 700; font-family: inherit;
+  cursor: pointer; width: 20%; transition: all 0.2s;
 }
-
-nav.bottom-nav button.active { 
-  color: var(--pink-dark); 
-  transform: translateY(-3px); /* Активная кнопка чуть подпрыгивает */
-}
-
-nav.bottom-nav .icon { 
-  font-size: 24px; 
-  line-height: 1; 
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.06)); 
-}
+nav.bottom-nav button.active { color: var(--pink-dark); transform: translateY(-3px); }
+nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.06)); }
