@@ -6,14 +6,18 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Мыльниковы Family</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Подключаем шрифты: Nunito (основной) и Great Vibes (для красоты) -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <!-- ЭКРАН ВХОДА -->
 <div id="lock">
-  <div class="logo-text">Мыльниковы Family</div>
+  <div class="logo-text">
+    <span class="logo-cursive">Мыльниковы</span><br>
+    <span class="logo-family">Family</span>
+  </div>
   <div class="logo-sub">Введите семейный код</div>
   <input id="code" type="password" inputmode="numeric" placeholder="····" autofocus>
   <button onclick="unlock()">Войти</button>
@@ -28,15 +32,15 @@
 
   <!-- 1. БЫТОВУХА -->
   <div id="tab-byt" class="tab-content active">
-    <div class="card" style="background: #fef3f2; color: #7a4f4c; border: none;" id="lastFeedBox">
+    <div class="glass-card" style="background: rgba(254, 243, 242, 0.6); color: #7a4f4c; border: 1px solid rgba(255,255,255,0.5);" id="lastFeedBox">
       Кормлений пока не было
     </div>
     <button class="btn feed" onclick="addEvent('feed')">🍼 Кормление</button>
     <button class="btn sleep" onclick="addEvent('sleep')">😴 Сон</button>
     <button class="btn diaper" onclick="addEvent('diaper')">💩 Подгузник</button>
     
-    <h3 style="color: var(--text-light); font-size: 16px; margin: 24px 0 12px;">Последние события</h3>
-    <div class="card" style="padding: 0 16px;">
+    <h3 style="color: var(--text-light); font-size: 16px; margin: 24px 0 12px; padding-left: 8px;">Последние события</h3>
+    <div class="glass-card" style="padding: 0 16px;">
       <ul class="list" id="eventsList"></ul>
     </div>
   </div>
@@ -61,22 +65,22 @@
 
   <!-- 4. ЗАДАЧИ -->
   <div id="tab-tasks" class="tab-content">
-    <div class="input-row">
+    <div class="input-row glass-card" style="padding: 8px;">
       <input type="text" id="taskInput" placeholder="Новая задача..." onkeypress="if(event.key==='Enter') addTask()">
       <button onclick="addTask()">+</button>
     </div>
-    <div class="card" style="padding: 0 16px;">
+    <div class="glass-card" style="padding: 0 16px;">
       <ul class="list" id="tasksList"></ul>
     </div>
   </div>
 
   <!-- 5. ПОКУПКИ -->
   <div id="tab-shop" class="tab-content">
-    <div class="input-row">
+    <div class="input-row glass-card" style="padding: 8px;">
       <input type="text" id="shopInput" placeholder="Что купить или ссылка..." onkeypress="if(event.key==='Enter') addShop()">
       <button onclick="addShop()">+</button>
     </div>
-    <div class="card" style="padding: 0 16px;">
+    <div class="glass-card" style="padding: 0 16px;">
       <ul class="list" id="shopList"></ul>
     </div>
   </div>
