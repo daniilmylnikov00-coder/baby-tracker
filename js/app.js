@@ -13,7 +13,8 @@ function unlock() {
 
 function showApp() {
   document.getElementById('lock').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+  // ВАЖНО: Меняем block на flex для правильной работы фиксированной шапки
+  document.getElementById('app').style.display = 'flex'; 
   renderAll();
 }
 
