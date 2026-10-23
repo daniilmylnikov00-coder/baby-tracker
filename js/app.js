@@ -15,10 +15,15 @@ function showApp() {
   document.getElementById('lock').style.display = 'none';
   document.getElementById('app').style.display = 'flex'; 
   
-  // Загружаем данные из облака при входе
-  loadEvents();
-  loadTasks();
-  loadShop();
+  // Проверяем, загрузился ли Supabase
+  if (window.db) {
+    loadEvents();
+    loadTasks();
+    loadShop();
+  } else {
+    console.error("Supabase не загрузился!");
+    document.getElementById('lastFeedBox').textContent = "Ошибка подключения к базе";
+  }
 }
 
 function switchTab(id, btn) {
