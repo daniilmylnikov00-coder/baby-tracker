@@ -45,6 +45,3 @@ function renderShop() {
     </li>`).join('');
 }
 
-db.channel('shop-channel')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'shop' }, loadShop)
-  .subscribe();
