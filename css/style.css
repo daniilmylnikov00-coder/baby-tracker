@@ -210,3 +210,88 @@ nav.bottom-nav button {
 }
 nav.bottom-nav button.active { color: var(--pink-dark); transform: translateY(-3px); }
 nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.06)); }
+
+/* --- СТИЛИ ДЛЯ ФОТОАЛЬБОМА (ПОЛАРОИДЫ) --- */
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.upload-btn {
+  background: linear-gradient(135deg, #f6d3d0, #e6a9a4);
+  color: white;
+  width: auto;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(217, 154, 150, 0.3);
+  border: none;
+  margin-bottom: 0;
+}
+
+.photo-album {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.polaroid {
+  background: #fff;
+  padding: 10px 10px 40px 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  width: 45%; /* Чтобы влезало по две штуки в ряд */
+  max-width: 160px;
+  position: relative;
+  transition: transform 0.2s ease;
+  /* Легкий поворот для хаоса */
+}
+
+/* Рандомные повороты для эффекта "приклеено вручную" */
+.polaroid:nth-child(odd) { transform: rotate(-3deg); }
+.polaroid:nth-child(even) { transform: rotate(4deg); }
+.polaroid:nth-child(3n) { transform: rotate(-1deg); }
+
+.polaroid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 2px;
+  background: #eee;
+}
+
+.polaroid .caption {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  color: #333;
+  line-height: 1;
+  padding: 0 5px;
+  word-wrap: break-word;
+}
+
+.polaroid .delete-photo {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255,255,255,0.8);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d9534f;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.polaroid:hover .delete-photo { opacity: 1; }
