@@ -155,22 +155,54 @@ ul.list li:last-child { border-bottom: none; }
   border-radius: 20px; border: 2px dashed rgba(232, 216, 200, 0.8);
 }
 
-/* Нижнее меню (стекло) */
+/* Нижнее меню (парящая капсула) */
 nav.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
+  position: fixed; 
+  /* Отступы от краев экрана, чтобы панель парила */
+  bottom: 20px; 
+  left: 16px; 
+  right: 16px; 
+  
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  display: flex; justify-content: space-around;
-  padding: 10px 4px 24px;
-  box-shadow: 0 -4px 24px rgba(232, 216, 200, 0.3);
-  border-top-left-radius: 28px; border-top-right-radius: 28px;
-  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  
+  display: flex; 
+  justify-content: space-around;
+  /* Чуть больше отступов внутри для воздуха */
+  padding: 12px 4px; 
+  
+  /* Тень более мягкая, чтобы она парила */
+  box-shadow: 0 10px 30px rgba(232, 216, 200, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  
+  /* Круглые углы со всех сторон */
+  border-radius: 30px; 
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
+
 nav.bottom-nav button {
-  background: none; border: none; display: flex; flex-direction: column; align-items: center;
-  gap: 4px; color: #c4b8b0; font-size: 10px; font-weight: 700; font-family: inherit;
-  cursor: pointer; width: 20%; transition: all 0.2s;
+  background: none; 
+  border: none; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  gap: 6px; 
+  color: #c4b8b0; 
+  font-size: 11px; 
+  font-weight: 700; 
+  font-family: inherit;
+  cursor: pointer; 
+  width: 20%; 
+  transition: all 0.2s;
 }
-nav.bottom-nav button.active { color: var(--pink-dark); transform: translateY(-2px); }
-nav.bottom-nav .icon { font-size: 22px; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.05)); }
+
+nav.bottom-nav button.active { 
+  color: var(--pink-dark); 
+  transform: translateY(-3px); /* Активная кнопка чуть подпрыгивает */
+}
+
+nav.bottom-nav .icon { 
+  font-size: 24px; 
+  line-height: 1; 
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.06)); 
+}
