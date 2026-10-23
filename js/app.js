@@ -19,20 +19,23 @@ function showApp() {
     loadEvents();
     loadTasks();
     loadShop();
+    loadPhotos('varya');
+    loadPhotos('family');
 
-    // 1. Пытаемся использовать Realtime (мгновенные обновления)
+    // Realtime для всех таблиц
     db.channel('custom-all-channel')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => loadEvents())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => loadTasks())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'shop' }, () => loadShop())
-      .subscribe((status) => {
-        console.log('Realtime статус:', status);
-      });
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'photos' }, (payload) => {
+         // Обновляем нужный альбом
+         if (payload.new && payload.new.album_type) loadPhotos(payload.new.album_type);
+         else if (payload.old) { loadPhotos('varya'); loadPhotos('family'); }
+      })
+      .subscribe();
 
-    // 2. СТРАХОВКА: Принудительно проверяем базу каждые 3 секунды
-    // Это сработает, даже если Realtime не поддерживается браузером
+    // Страховка каждые 3 секунды
     setInterval(() => {
-      // Обновляем только активную вкладку, чтобы не грузить телефон
       const activeTab = document.querySelector('.tab-content.active').id;
       if (activeTab === 'tab-byt') loadEvents();
       if (activeTab === 'tab-tasks') loadTasks();
@@ -47,10 +50,11 @@ function switchTab(id, btn) {
   document.querySelectorAll('.bottom-nav button').forEach(el => el.classList.remove('active'));
   btn.classList.add('active');
   
-  // Мгновенно обновляем при клике
   if (id === 'byt') loadEvents();
   if (id === 'tasks') loadTasks();
   if (id === 'shop') loadShop();
+  if (id === 'varya') loadPhotos('varya');
+  if (id === 'family') loadPhotos('family');
 }
 
 if (sessionStorage.getItem('unlocked')) {
