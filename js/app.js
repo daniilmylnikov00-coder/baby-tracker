@@ -14,7 +14,11 @@ function unlock() {
 function showApp() {
   document.getElementById('lock').style.display = 'none';
   document.getElementById('app').style.display = 'flex'; 
-  renderAll();
+  
+  // Загружаем данные из облака при входе
+  loadEvents();
+  loadTasks();
+  loadShop();
 }
 
 function switchTab(id, btn) {
@@ -22,12 +26,6 @@ function switchTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('active');
   document.querySelectorAll('.bottom-nav button').forEach(el => el.classList.remove('active'));
   btn.classList.add('active');
-}
-
-function renderAll() {
-  renderEvents();
-  renderTasks();
-  renderShop();
 }
 
 if (sessionStorage.getItem('unlocked')) {
