@@ -108,6 +108,14 @@
   </nav>
 </div>
 
+<!-- СКРИПТ ДЛЯ ЛОВЛИ ОШИБОК НА ЭКРАНЕ -->
+<script>
+  window.onerror = function(message, source, lineno, colno, error) {
+    alert("ОШИБКА JS: " + message + "\nСтрока: " + lineno);
+    return false;
+  };
+</script>
+
 <!-- ПОДКЛЮЧАЕМ SUPABASE (БИБЛИОТЕКА) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -116,7 +124,7 @@
 <script src="js/byt.js?v=2"></script>
 <script src="js/tasks.js?v=2"></script>
 <script src="js/shop.js?v=2"></script>
-<script src="js/album-varya.js?v=3"></script> <!-- НОВЫЙ ФАЙЛ -->
-<script src="js/app.js?v=3"></script>
+<script src="js/album-varya.js?v=4"></script> <!-- Увеличили версию -->
+<script src="js/app.js?v=4"></script>
 </body>
 </html>
