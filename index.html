@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Трекер малыша</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #fafafa; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22px; }
+  .hint { background: #eef3ff; padding: 10px; border-radius: 8px; font-size: 15px; }
+  .btn { display: block; width: 100%; padding: 18px; font-size: 18px; border: none;
+         border-radius: 12px; color: #fff; margin-bottom: 10px; cursor: pointer; }
+  .feed { background: #4a90d9; } .sleep { background: #7b61ff; } .diaper { background: #e0a030; }
+  ul { list-style: none; padding: 0; }
+  li { display: flex; justify-content: space-between; align-items: center;
+       padding: 10px 0; border-bottom: 1px solid #eee; font-size: 15px; }
+  .time { color: #666; font-size: 13px; }
+  .del { border: none; background: none; color: #bbb; font-size: 16px; }
+  #lock { display: flex; flex-direction: column; gap: 12px; padding-top: 40vh; }
+  #lock input { padding: 12px; font-size: 20px; text-align: center; letter-spacing: 8px;
+                border: 1px solid #ccc; border-radius: 8px; }
+  #lock button { padding: 12px; font-size: 16px; border: none; border-radius: 8px;
+                 background: #333; color: #fff; }
+  #err { color: red; font-size: 14px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="lock">
+    <input id="code" type="password" inputmode="numeric" placeholder="····" autofocus>
+    <button onclick="unlock()">Войти</button>
+    <div id="err"></div>
+  </div>
+
+  <div id="app" style="display:none">
+    <h1>Трекер малыша</h1>
+    <div class="hint" id="lastFeed"></div>
+    <div style="margin:16px 0">
+      <button class="btn feed" onclick="add('feed')">🍼 Кормление</button>
+      <button class="btn sleep" onclick="add('sleep')">😴 Сон</button>
+      <button class="btn diaper" onclick="add('diaper')">💩 Подгузник</button>
+    </div>
+    <h3>Последние события</h3>
+    <ul id="list"></ul>
+  </div>
+</div>
+
+<script>
+const CODE = '2171';
+const KEY = 'baby_events';
+const TYPES = { feed: '🍼 Кормление', sleep: '😴 Сон', diaper: '💩 Подгузник' };
+let events = JSON.parse(localStorage.getItem(KEY) || '[]');
+
+function unlock() {
+  if (document.getElementById('code').value === CODE) {
+    sessionStorage.setItem('unlocked', '1');
+    show();
+  } else {
+    document.getElementById('err').textContent = 'Неверный код';
+  }
+}
+
+function show() {
+  document.getElementById('lock').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  render();
+}
+
+function save() { localStorage.setItem(KEY, JSON.stringify(events)); }
+
+function add(type) {
+  events.unshift({ id: Date.now() + Math.random(), type, at: new Date().toISOString() });
+  save(); render();
+}
+
+function del(id) {
+  events = events.filter(e => e.id !== id);
+  save(); render();
+}
+
+function ago(iso) {
+  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (s < 60) return s + ' сек назад';
+  if (s < 3600) return Math.floor(s / 60) + ' мин назад';
+  return Math.floor(s / 3600) + ' ч ' + Math.floor((s % 3600) / 60) + ' мин назад';
+}
+
+function render() {
+  const lastFeed = events.find(e => e.type === 'feed');
+  document.getElementById('lastFeed').textContent = lastFeed
+    ? 'Последнее кормление: ' + ago(lastFeed.at)
+    : 'Кормлений пока не было';
+
+  document.getElementById('list').innerHTML = events.slice(0, 20).map(e => `
+    <li>
+      <span>${TYPES[e.type]}</span>
+      <span class="time">${new Date(e.at).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'})} · ${ago(e.at)}</span>
+      <button class="del" onclick="del(${e.id})">✕</button>
+    </li>`).join('');
+}
+
+if (sessionStorage.getItem('unlocked')) show();
+</script>
+</body>
+</html>
