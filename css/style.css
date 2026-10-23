@@ -233,26 +233,36 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
-  padding: 10px 0;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+  width: 100%;
 }
 
 .polaroid {
   background: #fff;
   padding: 10px 10px 40px 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
   border-radius: 4px;
-  width: 45%; /* Чтобы влезало по две штуки в ряд */
-  max-width: 160px;
   position: relative;
-  transition: transform 0.2s ease;
-  /* Легкий поворот для хаоса */
+  transition: transform 0.3s ease, z-index 0.3s;
 }
 
-/* Рандомные повороты для эффекта "приклеено вручную" */
-.polaroid:nth-child(odd) { transform: rotate(-3deg); }
-.polaroid:nth-child(even) { transform: rotate(4deg); }
-.polaroid:nth-child(3n) { transform: rotate(-1deg); }
+.polaroid:hover {
+  z-index: 10;
+  transform: scale(1.05) rotate(0deg) !important; /* При наведении выравнивается */
+}
+
+/* Размеры карточек для хаоса */
+.polaroid-large {
+  width: 70%; /* Большая карточка */
+  max-width: 280px;
+}
+
+.polaroid-small {
+  width: 45%; /* Маленькая карточка */
+  max-width: 160px;
+}
 
 .polaroid img {
   width: 100%;
@@ -269,7 +279,7 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   right: 0;
   text-align: center;
   font-family: 'Caveat', cursive;
-  font-size: 18px;
+  font-size: 20px;
   color: #333;
   line-height: 1;
   padding: 0 5px;
@@ -283,8 +293,8 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   background: rgba(255,255,255,0.8);
   border: none;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
   display: flex;
   align-items: center;
