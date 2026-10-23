@@ -1,3 +1,77 @@
+let varyaPhotos = [];
+let familyPhotos = [];
+
+async function loadPhotos(type) {
+  const { data, error } = await db.from('photos').select('*').eq('album_type', type).order('created_at', { ascending: true });
+  if (error) { console.error("Ошибка чтения фото:", error); return; }
+  
+  if (type === 'varya') {
+    varyaPhotos = data;
+    renderGallery('varyaGallery', varyaPhotos);
+  } else {
+    familyPhotos = data;
+    renderGallery('familyGallery', familyPhotos);
+  }
+}
+
+async function uploadPhoto(input, albumType) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const captionInput = document.getElementById(albumType + 'PhotoCaption');
+  const caption = captionInput.value;
+  
+  const btnId = albumType + 'UploadBtn';
+  const btn = document.getElementById(btnId);
+
+  try {
+    if (btn) btn.textContent = '1. Загрузка...';
+    
+    const fileName = `${Date.now()}_${file.name.replace(/\s/g, '_')}`;
+    const { data, error: uploadError } = await db.storage.from('photos').upload(fileName, file);
+    
+    if (uploadError) {
+      alert('ОШИБКА STORAGE: ' + uploadError.message);
+      if (btn) btn.textContent = '📸 Добавить фото';
+      return;
+    }
+
+    if (btn) btn.textContent = '2. Ссылка...';
+    const { data: { publicUrl } } = db.storage.from('photos').getPublicUrl(fileName);
+
+    if (btn) btn.textContent = '3. Сохранение...';
+    const { error: dbError } = await db.from('photos').insert([
+      { album_type: albumType, url: publicUrl, caption: caption }
+    ]);
+    
+    if (dbError) {
+      alert('ОШИБКА БАЗЫ: ' + dbError.message);
+      if (btn) btn.textContent = '📸 Добавить фото';
+      return;
+    }
+
+    if (btn) btn.textContent = 'Успех!';
+    captionInput.value = '';
+    input.value = '';
+    setTimeout(() => { if (btn) btn.textContent = '📸 Добавить фото'; }, 2000);
+    loadPhotos(albumType);
+
+  } catch (err) {
+    alert('НЕИЗВЕСТНАЯ ОШИБКА: ' + err.message);
+    if (btn) btn.textContent = '📸 Добавить фото';
+  }
+}
+
+async function deletePhoto(id, albumType, fileUrl) {
+  if (!confirm('Удалить это фото?')) return;
+  
+  const fileName = fileUrl.split('/').pop();
+  await db.storage.from('photos').remove([fileName]);
+  await db.from('photos').delete().eq('id', id);
+  
+  loadPhotos(albumType);
+}
+
 function renderGallery(containerId, photos) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -13,23 +87,19 @@ function renderGallery(containerId, photos) {
         hash = p.id.charCodeAt(i) + ((hash << 5) - hash);
     }
     
-    // Делаем расчет на 3 варианта, чтобы было больше хаоса
     const type = Math.abs(hash) % 3; 
     let sizeClass = '';
     let randomRotate = 0;
 
     if (type === 0) {
-      // Большая фотография на всю ширину
       sizeClass = 'polaroid-large';
-      randomRotate = (Math.abs(hash) % 5) - 2; // Наклон от -2 до +2
+      randomRotate = (Math.abs(hash) % 5) - 2;
     } else if (type === 1) {
-      // Маленькая фотография (левая колонка)
       sizeClass = 'polaroid-small';
-      randomRotate = (Math.abs(hash) % 9) - 4; // Наклон от -4 до +4
+      randomRotate = (Math.abs(hash) % 9) - 4;
     } else {
-      // Маленькая фотография (правая колонка)
       sizeClass = 'polaroid-small';
-      randomRotate = (Math.abs(hash) % 11) - 5; // Наклон от -5 до +5
+      randomRotate = (Math.abs(hash) % 11) - 5;
     }
 
     return `
