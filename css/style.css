@@ -27,7 +27,12 @@ body {
 #lock {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   height: 100vh; padding: 20px; text-align: center;
-  overflow-y: auto; /* На всякий случай, если экран маленький */
+  position: relative;
+  z-index: 10; /* Чтобы меню не перекрывало экран входа */
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(242, 198, 194, 0.4) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(232, 216, 200, 0.5) 0%, transparent 40%);
 }
 .logo-text { margin-bottom: 10px; line-height: 1; }
 .logo-cursive {
@@ -67,12 +72,12 @@ body {
   transition: transform 0.1s, opacity 0.2s;
 }
 #lock button:active { transform: scale(0.97); opacity: 0.9; }
- padding#err { color: #d9534f; margin-top: 12:px; font-size: 14px ; min-height: 20px; }
+#err { color: #d9534f; margin-top: 12px; font-size: 14px; min-height: 20px; }
 
-/* ---0 ПРИЛОЖЕНИЕ --- */
-#;app { 
+/* --- ПРИЛОЖЕНИЕ --- */
+#app { 
   display: none; 
-  margin height: 100vh;
+  height: 100vh;
   flex-direction: column;
 }
 
@@ -93,10 +98,13 @@ header h1 {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 120px; /* Место под парящее меню */
+  /* Убеждаемся, что контент не вылезает за края по горизонтали */
+  overflow-x: hidden; 
+  width: 100%;
 }
 .scrollable-content::-webkit-scrollbar { display: none; }
 
-.tab-content { display: none; padding: 0 16px; animation: fadeIn 0.3s ease; }
+.tab-content { display: none; padding: 0 16px; animation: fadeIn 0.3s ease; width: 100%; }
 .tab-content.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 
@@ -110,6 +118,7 @@ header h1 {
   padding: 16px;
   margin-bottom: 16px;
   box-shadow: 0 8px 32px rgba(232, 216, 200, 0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+  width: 100%; /* Важно для корректной ширины */
 }
 
 /* Кнопки */
@@ -141,7 +150,7 @@ header h1 {
 }
 
 /* Списки */
-ul.list { list-style: none;: 0; }
+ul.list { list-style: none; padding: 0; margin: 0; }
 ul.list li {
   display: flex; justify-content: space-between; align-items: center;
   padding: 14px 0; border-bottom: 1px solid rgba(232, 216, 200, 0.4); font-size: 15px;
@@ -152,16 +161,18 @@ ul.list li:last-child { border-bottom: none; }
 .del:active { color: #d9534f; }
 
 /* Поля ввода */
-.input-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.input-row { display: flex; gap: 8px; margin-bottom: 16px; width: 100%; }
 .input-row input[type="text"] {
   flex: 1; padding: 12px 16px; border: none; border-radius: 14px;
   font-size: 16px; font-family: inherit; outline: none;
   background: rgba(255, 255, 255, 0.6); color: var(--text);
+  width: 100%;
 }
 .input-row button {
   width: 48px; height: 48px; background: linear-gradient(135deg, #f6d3d0, #e6a9a4);
   color: white; border: none; border-radius: 14px; font-weight: 600; font-size: 24px;
   cursor: pointer; box-shadow: 0 4px 12px rgba(217, 154, 150, 0.3);
+  flex-shrink: 0;
 }
 
 .item-check { display: flex; align-items: center; gap: 12px; flex: 1; }
@@ -189,6 +200,7 @@ nav.bottom-nav {
   box-shadow: 0 10px 30px rgba(232, 216, 200, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
   border-radius: 30px; 
   border: 1px solid rgba(255, 255, 255, 0.8);
+  z-index: 100;
 }
 
 nav.bottom-nav button {
