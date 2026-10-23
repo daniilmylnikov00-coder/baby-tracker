@@ -211,7 +211,7 @@ nav.bottom-nav button {
 nav.bottom-nav button.active { color: var(--pink-dark); transform: translateY(-3px); }
 nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.06)); }
 
-/* --- СТИЛИ ДЛЯ ФОТОАЛЬБОМА (ПОЛАРОИДЫ) --- */
+/* --- СТИЛИ ДЛЯ ФОТОАЛЬБОМА (ХАОС) --- */
 .upload-area {
   display: flex;
   flex-direction: column;
@@ -230,42 +230,57 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
 }
 
 .photo-album {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 колонки */
-  gap: 16px;
-  padding: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px 10px;
   width: 100%;
-  /* Выравниваем элементы по центру */
-  justify-items: center; 
+  position: relative;
+  /* Добавляем немного пространства для разлетающихся фото */
+  min-height: 400px; 
 }
 
 .polaroid {
   background: #fff;
   padding: 8px 8px 35px 8px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.18);
   border-radius: 4px;
   position: relative;
   transition: transform 0.3s ease, z-index 0.3s;
-  width: 100%;
+  /* Важно: разрешаем элементам налезать друг на друга */
+  margin: -15px; 
 }
 
 .polaroid:hover {
-  z-index: 10;
-  transform: scale(1.05) rotate(0deg) !important;
+  z-index: 100;
+  transform: scale(1.1) rotate(0deg) !important;
 }
 
-/* Настоящий хаос: большие и маленькие карточки */
+/* Большие фото */
 .polaroid-large {
-  grid-column: span 2; /* Занимает 2 колонки (всю ширину) */
-  max-width: 85%;
-  margin: 10px 0;
+  width: 75%;
+  max-width: 260px;
+  z-index: 2; /* Большие поверх маленьких */
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
+/* Маленькие фото */
 .polaroid-small {
-  grid-column: span 1; /* Занимает 1 колонку (половину) */
-  max-width: 140px;
-  /* Чуть сдвигаем в стороны, чтобы не было ровной линии */
-  margin-top: -10px; 
+  width: 50%;
+  max-width: 160px;
+  z-index: 3; /* Маленькие поверх больших (для эффекта наложения) */
+}
+
+/* Чтобы маленькие фото не вставали строго в ряд, а "плясали" */
+.polaroid-small:nth-child(even) {
+  margin-left: -20px;
+  margin-top: 30px;
+}
+.polaroid-small:nth-child(odd) {
+  margin-right: -20px;
+  margin-top: -10px;
 }
 
 .polaroid img {
