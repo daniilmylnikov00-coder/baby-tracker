@@ -20,43 +20,46 @@ async function uploadPhoto(input, albumType) {
 
   const captionInput = document.getElementById(albumType + 'PhotoCaption');
   const caption = captionInput.value;
-  const btn = input.previousElementSibling;
+  
+  // Ищем кнопку по ID
+  const btnId = albumType + 'UploadBtn';
+  const btn = document.getElementById(btnId);
 
   try {
-    btn.textContent = '1. Загрузка файла...';
+    if (btn) btn.textContent = '1. Загрузка файла...';
     
     const fileName = `${Date.now()}_${file.name.replace(/\s/g, '_')}`;
     const { data, error: uploadError } = await db.storage.from('photos').upload(fileName, file);
     
     if (uploadError) {
       alert('ОШИБКА STORAGE: ' + uploadError.message);
-      btn.textContent = '📸 Добавить фото';
+      if (btn) btn.textContent = '📸 Добавить фото';
       return;
     }
 
-    btn.textContent = '2. Получение ссылки...';
+    if (btn) btn.textContent = '2. Получение ссылки...';
     const { data: { publicUrl } } = db.storage.from('photos').getPublicUrl(fileName);
 
-    btn.textContent = '3. Сохранение в базу...';
+    if (btn) btn.textContent = '3. Сохранение в базу...';
     const { error: dbError } = await db.from('photos').insert([
       { album_type: albumType, url: publicUrl, caption: caption }
     ]);
     
     if (dbError) {
       alert('ОШИБКА БАЗЫ: ' + dbError.message);
-      btn.textContent = '📸 Добавить фото';
+      if (btn) btn.textContent = '📸 Добавить фото';
       return;
     }
 
-    btn.textContent = 'Успех!';
+    if (btn) btn.textContent = 'Успех!';
     captionInput.value = '';
     input.value = '';
-    setTimeout(() => { btn.textContent = '📸 Добавить фото'; }, 2000);
+    setTimeout(() => { if (btn) btn.textContent = '📸 Добавить фото'; }, 2000);
     loadPhotos(albumType);
 
   } catch (err) {
     alert('НЕИЗВЕСТНАЯ ОШИБКА: ' + err.message);
-    btn.textContent = '📸 Добавить фото';
+    if (btn) btn.textContent = '📸 Добавить фото';
   }
 }
 
