@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Мыльниковы Family</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Great+Vibes&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 
@@ -47,20 +47,22 @@
 
     <!-- 2. АЛЬБОМ ВАРЕЧКИ -->
     <div id="tab-varya" class="tab-content">
-      <div class="placeholder">
-        <div style="font-size: 40px; margin-bottom: 12px;">👶</div>
-        <h3>Альбом Варечки</h3>
-        <p>Здесь скоро появятся первые фото.</p>
+      <div class="upload-area glass-card">
+        <input type="file" id="varyaPhotoInput" accept="image/*" style="display: none;" onchange="uploadPhoto(this, 'varya')">
+        <button class="btn upload-btn" onclick="document.getElementById('varyaPhotoInput').click()">📸 Добавить фото</button>
+        <input type="text" id="varyaPhotoCaption" placeholder="Подпись (например: Тест о беременности)" style="width: 100%; margin-top: 12px; padding: 12px; border-radius: 12px; border: none; background: rgba(255,255,255,0.6); font-family: inherit;">
       </div>
+      <div id="varyaGallery" class="photo-album"></div>
     </div>
 
     <!-- 3. СЕМЕЙНЫЙ АЛЬБОМ -->
     <div id="tab-family" class="tab-content">
-      <div class="placeholder">
-        <div style="font-size: 40px; margin-bottom: 12px;">📸</div>
-        <h3>Семейный альбом</h3>
-        <p>Здесь будут ваши общие фотографии.</p>
+      <div class="upload-area glass-card">
+        <input type="file" id="familyPhotoInput" accept="image/*" style="display: none;" onchange="uploadPhoto(this, 'family')">
+        <button class="btn upload-btn" onclick="document.getElementById('familyPhotoInput').click()">📸 Добавить фото</button>
+        <input type="text" id="familyPhotoCaption" placeholder="Подпись..." style="width: 100%; margin-top: 12px; padding: 12px; border-radius: 12px; border: none; background: rgba(255,255,255,0.6); font-family: inherit;">
       </div>
+      <div id="familyGallery" class="photo-album"></div>
     </div>
 
     <!-- 4. ЗАДАЧИ -->
@@ -109,11 +111,12 @@
 <!-- ПОДКЛЮЧАЕМ SUPABASE (БИБЛИОТЕКА) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- НАШИ СКРИПТЫ (СТРОГО В ТАКОМ ПОРЯДКЕ) -->
-<script src="js/supabase.js"></script>
-<script src="js/byt.js"></script>
-<script src="js/tasks.js"></script>
-<script src="js/shop.js"></script>
-<script src="js/app.js"></script>
+<!-- НАШИ СКРИПТЫ С ВЕРСИЕЙ -->
+<script src="js/supabase.js?v=2"></script>
+<script src="js/byt.js?v=2"></script>
+<script src="js/tasks.js?v=2"></script>
+<script src="js/shop.js?v=2"></script>
+<script src="js/album-varya.js?v=3"></script> <!-- НОВЫЙ ФАЙЛ -->
+<script src="js/app.js?v=3"></script>
 </body>
 </html>
