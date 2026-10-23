@@ -45,6 +45,3 @@ function renderTasks() {
     </li>`).join('');
 }
 
-db.channel('tasks-channel')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, loadTasks)
-  .subscribe();
