@@ -29,12 +29,11 @@
     <h1>Мыльниковы Family</h1>
   </header>
 
-  <!-- ОБЕРТКА ДЛЯ ПРОКРУТКИ -->
   <div class="scrollable-content">
     <!-- 1. БЫТОВУХА -->
     <div id="tab-byt" class="tab-content active">
       <div class="glass-card" style="background: rgba(254, 243, 242, 0.6); color: #7a4f4c; border: 1px solid rgba(255,255,255,0.5);" id="lastFeedBox">
-        Кормлений пока не было
+        Загрузка...
       </div>
       <button class="btn feed" onclick="addEvent('feed')">🍼 Кормление</button>
       <button class="btn sleep" onclick="addEvent('sleep')">😴 Сон</button>
@@ -85,7 +84,7 @@
         <ul class="list" id="shopList"></ul>
       </div>
     </div>
-  </div> <!-- КОНЕЦ ОБЕРТКИ -->
+  </div>
 
   <!-- НИЖНЕЕ МЕНЮ -->
   <nav class="bottom-nav">
@@ -107,10 +106,13 @@
   </nav>
 </div>
 
-<!-- ПОДКЛЮЧЕНИЕ СКРИПТОВ -->
+<!-- ПОДКЛЮЧАЕМ SUPABASE (БИБЛИОТЕКА) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- НАШИ СКРИПТЫ -->
+<script src="js/app.js"></script>
 <script src="js/byt.js"></script>
 <script src="js/tasks.js"></script>
 <script src="js/shop.js"></script>
-<script src="js/app.js"></script>
 </body>
 </html>
