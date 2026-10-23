@@ -49,7 +49,8 @@
     <div id="tab-varya" class="tab-content">
       <div class="upload-area glass-card">
         <input type="file" id="varyaPhotoInput" accept="image/*" style="display: none;" onchange="uploadPhoto(this, 'varya')">
-        <button class="btn upload-btn" onclick="document.getElementById('varyaPhotoInput').click()">📸 Добавить фото</button>
+        <!-- ДОБАВИЛИ ID КНОПКЕ -->
+        <button id="varyaUploadBtn" class="btn upload-btn" onclick="document.getElementById('varyaPhotoInput').click()">📸 Добавить фото</button>
         <input type="text" id="varyaPhotoCaption" placeholder="Подпись (например: Тест о беременности)" style="width: 100%; margin-top: 12px; padding: 12px; border-radius: 12px; border: none; background: rgba(255,255,255,0.6); font-family: inherit;">
       </div>
       <div id="varyaGallery" class="photo-album"></div>
@@ -59,7 +60,8 @@
     <div id="tab-family" class="tab-content">
       <div class="upload-area glass-card">
         <input type="file" id="familyPhotoInput" accept="image/*" style="display: none;" onchange="uploadPhoto(this, 'family')">
-        <button class="btn upload-btn" onclick="document.getElementById('familyPhotoInput').click()">📸 Добавить фото</button>
+        <!-- ДОБАВИЛИ ID КНОПКЕ -->
+        <button id="familyUploadBtn" class="btn upload-btn" onclick="document.getElementById('familyPhotoInput').click()">📸 Добавить фото</button>
         <input type="text" id="familyPhotoCaption" placeholder="Подпись..." style="width: 100%; margin-top: 12px; padding: 12px; border-radius: 12px; border: none; background: rgba(255,255,255,0.6); font-family: inherit;">
       </div>
       <div id="familyGallery" class="photo-album"></div>
@@ -116,15 +118,15 @@
   };
 </script>
 
-<!-- ПОДКЛЮЧАЕМ SUPABASE (БИБЛИОТЕКА) -->
+<!-- ПОДКЛЮЧАЕМ SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- НАШИ СКРИПТЫ С ВЕРСИЕЙ -->
+<!-- НАШИ СКРИПТЫ (обновили версии) -->
 <script src="js/supabase.js?v=2"></script>
 <script src="js/byt.js?v=2"></script>
 <script src="js/tasks.js?v=2"></script>
 <script src="js/shop.js?v=2"></script>
-<script src="js/album-varya.js?v=4"></script> <!-- Увеличили версию -->
-<script src="js/app.js?v=4"></script>
+<script src="js/album-varya.js?v=5"></script>
+<script src="js/app.js?v=5"></script>
 </body>
 </html>
