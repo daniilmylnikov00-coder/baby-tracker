@@ -16,25 +16,28 @@ function showApp() {
   document.getElementById('app').style.display = 'flex'; 
   
   if (window.db) {
-    // Первичная загрузка данных
     loadEvents();
     loadTasks();
     loadShop();
 
-    // Единая подписка на все изменения в базе (Realtime)
+    // 1. Пытаемся использовать Realtime (мгновенные обновления)
     db.channel('custom-all-channel')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => {
-        loadEvents();
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => {
-        loadTasks();
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'shop' }, () => {
-        loadShop();
-      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => loadEvents())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => loadTasks())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'shop' }, () => loadShop())
       .subscribe((status) => {
-        console.log('Статус Realtime:', status); // Если что-то не так, мы увидим это в консоли
+        console.log('Realtime статус:', status);
       });
+
+    // 2. СТРАХОВКА: Принудительно проверяем базу каждые 3 секунды
+    // Это сработает, даже если Realtime не поддерживается браузером
+    setInterval(() => {
+      // Обновляем только активную вкладку, чтобы не грузить телефон
+      const activeTab = document.querySelector('.tab-content.active').id;
+      if (activeTab === 'tab-byt') loadEvents();
+      if (activeTab === 'tab-tasks') loadTasks();
+      if (activeTab === 'tab-shop') loadShop();
+    }, 3000);
   }
 }
 
@@ -44,7 +47,7 @@ function switchTab(id, btn) {
   document.querySelectorAll('.bottom-nav button').forEach(el => el.classList.remove('active'));
   btn.classList.add('active');
   
-  // Принудительно обновляем данные при переключении вкладки (на случай, если Realtime затупит)
+  // Мгновенно обновляем при клике
   if (id === 'byt') loadEvents();
   if (id === 'tasks') loadTasks();
   if (id === 'shop') loadShop();
