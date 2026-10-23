@@ -2,105 +2,109 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Трекер малыша</title>
-<style>
-  body { font-family: system-ui, sans-serif; margin: 0; background: #fafafa; }
-  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; }
-  h1 { font-size: 22px; }
-  .hint { background: #eef3ff; padding: 10px; border-radius: 8px; font-size: 15px; }
-  .btn { display: block; width: 100%; padding: 18px; font-size: 18px; border: none;
-         border-radius: 12px; color: #fff; margin-bottom: 10px; cursor: pointer; }
-  .feed { background: #4a90d9; } .sleep { background: #7b61ff; } .diaper { background: #e0a030; }
-  ul { list-style: none; padding: 0; }
-  li { display: flex; justify-content: space-between; align-items: center;
-       padding: 10px 0; border-bottom: 1px solid #eee; font-size: 15px; }
-  .time { color: #666; font-size: 13px; }
-  .del { border: none; background: none; color: #bbb; font-size: 16px; }
-  #lock { display: flex; flex-direction: column; gap: 12px; padding-top: 40vh; }
-  #lock input { padding: 12px; font-size: 20px; text-align: center; letter-spacing: 8px;
-                border: 1px solid #ccc; border-radius: 8px; }
-  #lock button { padding: 12px; font-size: 16px; border: none; border-radius: 8px;
-                 background: #333; color: #fff; }
-  #err { color: red; font-size: 14px; text-align: center; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Мыльниковы Family</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="wrap">
-  <div id="lock">
-    <input id="code" type="password" inputmode="numeric" placeholder="····" autofocus>
-    <button onclick="unlock()">Войти</button>
-    <div id="err"></div>
-  </div>
 
-  <div id="app" style="display:none">
-    <h1>Трекер малыша</h1>
-    <div class="hint" id="lastFeed"></div>
-    <div style="margin:16px 0">
-      <button class="btn feed" onclick="add('feed')">🍼 Кормление</button>
-      <button class="btn sleep" onclick="add('sleep')">😴 Сон</button>
-      <button class="btn diaper" onclick="add('diaper')">💩 Подгузник</button>
-    </div>
-    <h3>Последние события</h3>
-    <ul id="list"></ul>
-  </div>
+<!-- ЭКРАН ВХОДА -->
+<div id="lock">
+  <div class="logo-text">Мыльниковы Family</div>
+  <div class="logo-sub">Введите семейный код</div>
+  <input id="code" type="password" inputmode="numeric" placeholder="····" autofocus>
+  <button onclick="unlock()">Войти</button>
+  <div id="err"></div>
 </div>
 
-<script>
-const CODE = '2171';
-const KEY = 'baby_events';
-const TYPES = { feed: '🍼 Кормление', sleep: '😴 Сон', diaper: '💩 Подгузник' };
-let events = JSON.parse(localStorage.getItem(KEY) || '[]');
+<!-- ПРИЛОЖЕНИЕ -->
+<div id="app">
+  <header>
+    <h1>Мыльниковы Family</h1>
+  </header>
 
-function unlock() {
-  if (document.getElementById('code').value === CODE) {
-    sessionStorage.setItem('unlocked', '1');
-    show();
-  } else {
-    document.getElementById('err').textContent = 'Неверный код';
-  }
-}
+  <!-- 1. БЫТОВУХА -->
+  <div id="tab-byt" class="tab-content active">
+    <div class="card" style="background: #fef3f2; color: #7a4f4c; border: none;" id="lastFeedBox">
+      Кормлений пока не было
+    </div>
+    <button class="btn feed" onclick="addEvent('feed')">🍼 Кормление</button>
+    <button class="btn sleep" onclick="addEvent('sleep')">😴 Сон</button>
+    <button class="btn diaper" onclick="addEvent('diaper')">💩 Подгузник</button>
+    
+    <h3 style="color: var(--text-light); font-size: 16px; margin: 24px 0 12px;">Последние события</h3>
+    <div class="card" style="padding: 0 16px;">
+      <ul class="list" id="eventsList"></ul>
+    </div>
+  </div>
 
-function show() {
-  document.getElementById('lock').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  render();
-}
+  <!-- 2. АЛЬБОМ ВАРЕЧКИ -->
+  <div id="tab-varya" class="tab-content">
+    <div class="placeholder">
+      <div style="font-size: 40px; margin-bottom: 12px;">👶</div>
+      <h3>Альбом Варечки</h3>
+      <p>Здесь скоро появятся первые фото.</p>
+    </div>
+  </div>
 
-function save() { localStorage.setItem(KEY, JSON.stringify(events)); }
+  <!-- 3. СЕМЕЙНЫЙ АЛЬБОМ -->
+  <div id="tab-family" class="tab-content">
+    <div class="placeholder">
+      <div style="font-size: 40px; margin-bottom: 12px;">📸</div>
+      <h3>Семейный альбом</h3>
+      <p>Здесь будут ваши общие фотографии.</p>
+    </div>
+  </div>
 
-function add(type) {
-  events.unshift({ id: Date.now() + Math.random(), type, at: new Date().toISOString() });
-  save(); render();
-}
+  <!-- 4. ЗАДАЧИ -->
+  <div id="tab-tasks" class="tab-content">
+    <div class="input-row">
+      <input type="text" id="taskInput" placeholder="Новая задача..." onkeypress="if(event.key==='Enter') addTask()">
+      <button onclick="addTask()">+</button>
+    </div>
+    <div class="card" style="padding: 0 16px;">
+      <ul class="list" id="tasksList"></ul>
+    </div>
+  </div>
 
-function del(id) {
-  events = events.filter(e => e.id !== id);
-  save(); render();
-}
+  <!-- 5. ПОКУПКИ -->
+  <div id="tab-shop" class="tab-content">
+    <div class="input-row">
+      <input type="text" id="shopInput" placeholder="Что купить или ссылка..." onkeypress="if(event.key==='Enter') addShop()">
+      <button onclick="addShop()">+</button>
+    </div>
+    <div class="card" style="padding: 0 16px;">
+      <ul class="list" id="shopList"></ul>
+    </div>
+  </div>
 
-function ago(iso) {
-  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
-  if (s < 60) return s + ' сек назад';
-  if (s < 3600) return Math.floor(s / 60) + ' мин назад';
-  return Math.floor(s / 3600) + ' ч ' + Math.floor((s % 3600) / 60) + ' мин назад';
-}
+  <!-- НИЖНЕЕ МЕНЮ -->
+  <nav class="bottom-nav">
+    <button class="active" onclick="switchTab('byt', this)">
+      <span class="icon">🏠</span> Быт
+    </button>
+    <button onclick="switchTab('varya', this)">
+      <span class="icon">👶</span> Варя
+    </button>
+    <button onclick="switchTab('family', this)">
+      <span class="icon">📸</span> Семья
+    </button>
+    <button onclick="switchTab('tasks', this)">
+      <span class="icon">📝</span> Задачи
+    </button>
+    <button onclick="switchTab('shop', this)">
+      <span class="icon">🛒</span> Покупки
+    </button>
+  </nav>
+</div>
 
-function render() {
-  const lastFeed = events.find(e => e.type === 'feed');
-  document.getElementById('lastFeed').textContent = lastFeed
-    ? 'Последнее кормление: ' + ago(lastFeed.at)
-    : 'Кормлений пока не было';
-
-  document.getElementById('list').innerHTML = events.slice(0, 20).map(e => `
-    <li>
-      <span>${TYPES[e.type]}</span>
-      <span class="time">${new Date(e.at).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'})} · ${ago(e.at)}</span>
-      <button class="del" onclick="del(${e.id})">✕</button>
-    </li>`).join('');
-}
-
-if (sessionStorage.getItem('unlocked')) show();
-</script>
+<!-- ПОДКЛЮЧЕНИЕ СКРИПТОВ -->
+<script src="js/byt.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/shop.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
