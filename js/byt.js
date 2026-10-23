@@ -1,16 +1,26 @@
 const TYPES = { feed: '🍼 Кормление', sleep: '😴 Сон', diaper: '💩 Подгузник' };
-let events = JSON.parse(localStorage.getItem('baby_events') || '[]');
+let events = [];
 
-function addEvent(type) {
-  events.unshift({ id: Date.now() + Math.random(), type, at: new Date().toISOString() });
-  localStorage.setItem('baby_events', JSON.stringify(events));
+// Загрузка событий из базы
+async function loadEvents() {
+  const { data, error } = await db.from('events').select('*').order('started_at', { ascending: false }).limit(20);
+  if (error) { console.error(error); return; }
+  events = data;
   renderEvents();
 }
 
-function delEvent(id) {
-  events = events.filter(e => e.id !== id);
-  localStorage.setItem('baby_events', JSON.stringify(events));
-  renderEvents();
+// Добавление события в базу
+async function addEvent(type) {
+  const { error } = await db.from('events').insert([{ type: type }]);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  loadEvents(); // Обновляем список
+}
+
+// Удаление события
+async function delEvent(id) {
+  const { error } = await db.from('events').delete().eq('id', id);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  loadEvents();
 }
 
 function ago(iso) {
@@ -23,17 +33,22 @@ function ago(iso) {
 function renderEvents() {
   const lastFeed = events.find(e => e.type === 'feed');
   const box = document.getElementById('lastFeedBox');
-  if (box) box.textContent = lastFeed ? 'Последнее кормление: ' + ago(lastFeed.at) : 'Кормлений пока не было';
+  if (box) box.textContent = lastFeed ? 'Последнее кормление: ' + ago(lastFeed.started_at) : 'Кормлений пока не было';
 
   const list = document.getElementById('eventsList');
   if (list) {
-    list.innerHTML = events.slice(0, 20).map(e => `
+    list.innerHTML = events.map(e => `
       <li>
         <div>
           <div style="font-weight: 600;">${TYPES[e.type]}</div>
-          <span class="time">${new Date(e.at).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'})} · ${ago(e.at)}</span>
+          <span class="time">${new Date(e.started_at).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'})} · ${ago(e.started_at)}</span>
         </div>
-        <button class="del" onclick="delEvent(${e.id})">✕</button>
+        <button class="del" onclick="delEvent('${e.id}')">✕</button>
       </li>`).join('');
   }
 }
+
+// Подписка на изменения в реальном времени (чтобы у жены обновлялось само)
+db.channel('events-channel')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, loadEvents)
+  .subscribe();
