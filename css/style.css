@@ -233,7 +233,7 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
 .photo-album {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 25px 15px; /* Увеличили отступ сверху, чтобы гвоздики не перекрывались */
+  gap: 25px 15px; 
   padding: 30px 10px;
   width: 100%;
   align-items: start;
@@ -254,12 +254,16 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   width: 100%;
   break-inside: avoid;
   
-  /* Возвращаем белую рамку полароида и место для текста снизу */
-  padding: 8px 8px 35px 8px; 
+  /* ИЗМЕНЕНИЯ ЗДЕСЬ: убираем фиксированный padding-bottom */
+  padding: 8px; 
   background: #fff;
   box-shadow: 2px 4px 12px rgba(0,0,0,0.15);
   border-radius: 2px;
   border: 1px solid #eaeaea;
+  
+  /* Добавляем flex, чтобы текст выталкивал рамку вниз */
+  display: flex;
+  flex-direction: column;
 }
 
 .polaroid:hover {
@@ -278,12 +282,11 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  /* Более сложный градиент для объема и блика */
   background: radial-gradient(circle at 30% 30%, #ffffff 10%, #f2c6c2 40%, #c98a86 80%, #a3625e 100%);
   box-shadow: 
-    inset -1px -1px 3px rgba(0,0,0,0.4), /* Внутренняя тень */
-    inset 2px 2px 4px rgba(255,255,255,0.8), /* Блик */
-    2px 3px 5px rgba(0,0,0,0.3); /* Падающая тень на доску */
+    inset -1px -1px 3px rgba(0,0,0,0.4), 
+    inset 2px 2px 4px rgba(255,255,255,0.8), 
+    2px 3px 5px rgba(0,0,0,0.3); 
   z-index: 10;
 }
 
@@ -292,6 +295,7 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   height: auto;
   object-fit: cover;
   display: block;
+  border-radius: 1px;
 }
 
 /* Убираем фиксированные классы размеров */
@@ -305,19 +309,17 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
 
 /* ПОДПИСЬ ТЕПЕРЬ ПОД ФОТО */
 .polaroid .caption {
-  position: absolute;
-  bottom: 8px;
-  left: 0;
-  right: 0;
+  /* Убираем position: absolute */
+  position: relative;
+  width: 100%;
+  margin-top: 8px; /* Отступ от фото до текста */
+  margin-bottom: 5px; /* Отступ от текста до низа карточки */
   text-align: center;
-  font-family: 'Caveat', cursive; /* Оставляем рукописный шрифт, он тут идеален */
+  font-family: 'Caveat', cursive; 
   font-size: 20px;
-  color: #4a403c; /* Темно-коричневый цвет */
-  line-height: 1;
-  padding: 0 5px;
+  color: #4a403c; 
+  line-height: 1.1;
   word-wrap: break-word;
-  /* Убираем фон, так как текст теперь на белой рамке */
-  background: transparent; 
 }
 
 .polaroid .delete-photo {
