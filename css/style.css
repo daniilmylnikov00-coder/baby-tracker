@@ -229,16 +229,15 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   margin-bottom: 0;
 }
 
-/* Контейнер для альбома (имитация пробковой доски) */
+/* Контейнер для альбома (пробковая доска) */
 .photo-album {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 25px 15px; /* Увеличили отступ сверху, чтобы гвоздики не перекрывались */
   padding: 30px 10px;
   width: 100%;
   align-items: start;
   
-  /* Легкая текстура доски (цвет топленого молока с небольшим шумом) */
   background-color: #f5ebe6;
   background-image: 
     radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 60%),
@@ -248,40 +247,43 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
 }
 
+/* Карточка фотографии */
 .polaroid {
   position: relative;
   transition: transform 0.3s ease, z-index 0.3s;
   width: 100%;
   break-inside: avoid;
-  /* Убираем белый фон и паддинги полароида */
-  padding: 0;
-  background: transparent;
-  /* Делаем тонкую белую рамку для фото, как у распечатанных снимков */
-  border: 4px solid #fff;
-  box-shadow: 2px 4px 10px rgba(0,0,0,0.2);
+  
+  /* Возвращаем белую рамку полароида и место для текста снизу */
+  padding: 8px 8px 35px 8px; 
+  background: #fff;
+  box-shadow: 2px 4px 12px rgba(0,0,0,0.15);
+  border-radius: 2px;
+  border: 1px solid #eaeaea;
 }
 
 .polaroid:hover {
   z-index: 100;
   transform: scale(1.05) rotate(0deg) !important;
-  box-shadow: 2px 8px 20px rgba(0,0,0,0.3);
+  box-shadow: 2px 8px 25px rgba(0,0,0,0.25);
 }
 
-/* ГВОЗДИК */
+/* РЕАЛИСТИЧНЫЙ ГВОЗДИК */
 .polaroid::before {
   content: '';
   position: absolute;
-  top: -6px; /* Выносим гвоздик чуть выше фото */
+  top: -8px; 
   left: 50%;
   transform: translateX(-50%);
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  /* Делаем градиент для объема (нежно-розовый) */
-  background: radial-gradient(circle at 30% 30%, #fff, #f2c6c2 40%, #d99a96 100%);
+  /* Более сложный градиент для объема и блика */
+  background: radial-gradient(circle at 30% 30%, #ffffff 10%, #f2c6c2 40%, #c98a86 80%, #a3625e 100%);
   box-shadow: 
-    inset -1px -1px 2px rgba(0,0,0,0.3), 
-    1px 2px 4px rgba(0,0,0,0.4);
+    inset -1px -1px 3px rgba(0,0,0,0.4), /* Внутренняя тень */
+    inset 2px 2px 4px rgba(255,255,255,0.8), /* Блик */
+    2px 3px 5px rgba(0,0,0,0.3); /* Падающая тень на доску */
   z-index: 10;
 }
 
@@ -289,9 +291,10 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   width: 100%;
   height: auto;
   object-fit: cover;
-  display: block; /* Убирает лишние отступы под картинкой */
+  display: block;
 }
 
+/* Убираем фиксированные классы размеров */
 .polaroid-large, .polaroid-small {
   grid-column: span 1;
 }
@@ -300,23 +303,21 @@ nav.bottom-nav .icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 2p
   grid-column: span 2;
 }
 
-/* Подпись теперь будет поверх фото снизу */
+/* ПОДПИСЬ ТЕПЕРЬ ПОД ФОТО */
 .polaroid .caption {
   position: absolute;
-  bottom: 0;
+  bottom: 8px;
   left: 0;
   right: 0;
   text-align: center;
-  font-family: 'Caveat', cursive;
+  font-family: 'Caveat', cursive; /* Оставляем рукописный шрифт, он тут идеален */
   font-size: 20px;
-  color: #fff;
-  line-height: 1.2;
-  padding: 15px 5px 5px 5px;
+  color: #4a403c; /* Темно-коричневый цвет */
+  line-height: 1;
+  padding: 0 5px;
   word-wrap: break-word;
-  /* Затемнение снизу, чтобы белый текст было видно на любой картинке */
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
-  border-bottom-left-radius: 2px;
-  border-bottom-right-radius: 2px;
+  /* Убираем фон, так как текст теперь на белой рамке */
+  background: transparent; 
 }
 
 .polaroid .delete-photo {
