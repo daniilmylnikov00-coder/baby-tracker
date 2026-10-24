@@ -1,0 +1,16 @@
+{
+  "name": "Мыльниковы Family",
+  "short_name": "Family",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fdf9f6",
+  "theme_color": "#d99a96",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
