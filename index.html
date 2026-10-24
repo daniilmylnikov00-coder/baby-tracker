@@ -76,6 +76,12 @@
         <input type="text" id="taskInput" placeholder="Новая задача..." onkeypress="if(event.key==='Enter') addTask()">
         <button onclick="addTask()">+</button>
       </div>
+      
+      <!-- НОВАЯ КНОПКА ДЛЯ УВЕДОМЛЕНИЙ -->
+      <button id="pushBtn" onclick="enablePush()" class="btn" style="background: linear-gradient(135deg, #f6d3d0, #e6a9a4); color: white; font-size: 14px; padding: 10px; margin-bottom: 16px;">
+        🔔 Включить уведомления
+      </button>
+
       <div class="glass-card" style="padding: 0 16px;">
         <ul class="list" id="tasksList"></ul>
       </div>
