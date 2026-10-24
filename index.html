@@ -70,15 +70,19 @@
       <div id="familyGallery" class="photo-album"></div>
     </div>
 
-    <!-- 4. ЗАДАЧИ -->
+       <!-- 4. ЗАДАЧИ -->
     <div id="tab-tasks" class="tab-content">
-      <div class="input-row glass-card" style="padding: 8px;">
-        <input type="text" id="taskInput" placeholder="Новая задача..." onkeypress="if(event.key==='Enter') addTask()">
-        <button onclick="addTask()">+</button>
+      <div class="glass-card" style="padding: 16px; margin-bottom: 16px;">
+        <input type="text" id="taskInput" placeholder="Новая задача..." style="width: 100%; padding: 12px; border-radius: 12px; border: none; background: rgba(255,255,255,0.6); font-family: inherit; margin-bottom: 10px;">
+        
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="datetime-local" id="taskTime" style="flex: 1; padding: 10px; border-radius: 12px; border: none; background: rgba(255,255,255,0.6); font-family: inherit; color: var(--text);">
+          <button onclick="addTask()" style="background: linear-gradient(135deg, #f6d3d0, #e6a9a4); color: white; border: none; border-radius: 12px; width: 48px; height: 48px; font-size: 24px; cursor: pointer; flex-shrink: 0;">+</button>
+        </div>
       </div>
       
-      <!-- НОВАЯ КНОПКА ДЛЯ УВЕДОМЛЕНИЙ -->
-      <button id="pushBtn" onclick="enablePush()" class="btn" style="background: linear-gradient(135deg, #f6d3d0, #e6a9a4); color: white; font-size: 14px; padding: 10px; margin-bottom: 16px;">
+      <!-- КНОПКА УВЕДОМЛЕНИЙ -->
+      <button id="pushBtn" onclick="enablePush()" class="btn" style="background: linear-gradient(135deg, #f6d3d0, #e6a9a4); color: white; font-size: 14px; padding: 12px; margin-bottom: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(217, 154, 150, 0.3); border: none; width: 100%; cursor: pointer;">
         🔔 Включить уведомления
       </button>
 
