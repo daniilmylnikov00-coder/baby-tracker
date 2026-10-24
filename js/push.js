@@ -26,7 +26,7 @@ async function enablePush() {
       btn.textContent = 'Загрузка...';
       
       // Регистрируем Service Worker
-      const registration = await navigator.serviceWorker.register('/sw.js');
+      const registration = await navigator.serviceWorker.register('sw.js');
       
       // Подписываемся
       const subscription = await registration.pushManager.subscribe({
