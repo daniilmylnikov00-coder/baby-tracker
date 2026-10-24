@@ -20,38 +20,45 @@ async function enablePush() {
   }
 
   try {
-    const permission = await Notification.requestPermission();
+    // 1. Сначала регистрируем Service Worker
+    btn.textContent = 'Регистрация...';
+    await navigator.serviceWorker.register('sw.js');
     
-    if (permission === 'granted') {
-      btn.textContent = 'Загрузка...';
-      
-      // Регистрируем Service Worker
-      const registration = await navigator.serviceWorker.register('sw.js');
-      
-      // Подписываемся
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-      });
-
-      const sub = subscription.toJSON();
-      
-      // Сохраняем в Supabase
-      await db.from('push_subscriptions').upsert({
-        endpoint: sub.endpoint,
-        p256dh: sub.keys.p256dh,
-        auth: sub.keys.auth
-      }, { onConflict: 'endpoint' });
-
-      btn.textContent = '🔔 Уведомления включены!';
-      btn.style.background = '#a3c9a8'; // Зеленоватый цвет при успехе
-      btn.disabled = true;
-      alert('Отлично! Теперь вы будете получать уведомления.');
-    } else {
+    // 2. Ждем, пока он станет активным (это самое важное!)
+    btn.textContent = 'Ожидание...';
+    const registration = await navigator.serviceWorker.ready;
+    
+    // 3. Запрашиваем разрешение
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
       alert('Вы отклонили запрос на уведомления. Разрешите их в настройках Safari.');
+      btn.textContent = '🔔 Включить уведомления';
+      return;
     }
+    
+    // 4. Подписываемся
+    btn.textContent = 'Загрузка...';
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+
+    const sub = subscription.toJSON();
+    
+    await db.from('push_subscriptions').upsert({
+      endpoint: sub.endpoint,
+      p256dh: sub.keys.p256dh,
+      auth: sub.keys.auth
+    }, { onConflict: 'endpoint' });
+
+    btn.textContent = '🔔 Уведомления включены!';
+    btn.style.background = '#a3c9a8';
+    btn.disabled = true;
+    alert('Отлично! Теперь вы будете получать уведомления.');
+    
   } catch (err) {
     console.error('Ошибка:', err);
-    alert('Ошибка при включении уведомлений: ' + err.message);
+    alert('Ошибка: ' + err.message);
+    btn.textContent = '🔔 Включить уведомления';
   }
 }
